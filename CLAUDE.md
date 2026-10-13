@@ -96,15 +96,14 @@ Warm, calm, cream-and-clay look.
 
 ## Landing page structure
 
-1. **Nav:** MediAI logo (Medi + "AI" in clay) · How it works · Features · Try a session · Pricing · Sign in · Get started
+1. **Nav:** MediAI logo (Medi + "AI" in clay) · How it works · Features · Try a session · Sign in · Get started
 2. **Hero:** Guru mascot in the center, with **6 floating mood cards in a tilted arc, 3 on the LEFT and 3 on the RIGHT of the image** (never below it). Left: Feeling stressed, Can't sleep, Exam nerves. Right: Need focus, Feeling low, Short on time. Cards tilt outward (about 14–20°). Faint circle arcs in the background. Then: eyebrow, headline, subtext, "Start a free session →" button, "See how it works →" link, "Free to start · No app download needed".
    - On phones the cards stay on both sides, smaller, showing title only.
 3. **How it works:** 3 steps: Share your mood → AI creates your session → Breathe and listen.
 4. **Features:** 6 cards (see Features list).
 5. **Try it now** (dark section): mood buttons; clicking one updates a session preview card with a breathing circle, length, title and first line.
-6. **Pricing:** Free (₹0: 3 AI meditations a day, breathing coach, 60-second calm) and Plus (₹99/month: unlimited meditations, all voices and languages, sleep mode and mood journal).
-7. **Final call to action:** "Take one calm breath with us today"
-8. **Footer:** logo, wellness note with Tele-MANAS 14416, links (How it works, Pricing, Privacy, Contact)
+6. **Final call to action:** "Take one calm breath with us today"
+7. **Footer:** logo, wellness note with Tele-MANAS 14416, links (How it works, Privacy, Contact)
 
 ## Writing style for app text
 

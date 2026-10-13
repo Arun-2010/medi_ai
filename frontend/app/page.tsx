@@ -5,7 +5,6 @@ import {
   FinalCta,
   Footer,
   HowItWorks,
-  Pricing,
 } from "@/components/Sections";
 import { TryItNow } from "@/components/TryItNow";
 
@@ -18,7 +17,6 @@ export default function Home() {
         <HowItWorks />
         <Features />
         <TryItNow />
-        <Pricing />
         <FinalCta />
       </main>
       <Footer />

@@ -124,76 +124,9 @@ export function Features() {
   );
 }
 
-const PLANS = [
-  {
-    name: "Free",
-    price: "₹0",
-    period: null,
-    perks: ["3 AI meditations a day", "Breathing coach", "60-second calm"],
-    cta: "Start free",
-    featured: false,
-  },
-  {
-    name: "Plus",
-    price: "₹99",
-    period: "/ month",
-    perks: ["Unlimited meditations", "All voices and languages", "Sleep mode and mood journal"],
-    cta: "Get Plus",
-    featured: true,
-  },
-];
-
-export function Pricing() {
-  return (
-    <section id="pricing" className="scroll-mt-16 py-20 md:py-24">
-      <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
-        <Eyebrow>Pricing</Eyebrow>
-        <SectionTitle wide>Start free. Upgrade when you&apos;re ready.</SectionTitle>
-
-        <div className="mx-auto mt-12 grid max-w-3xl gap-5 text-left md:grid-cols-2">
-          {PLANS.map((plan) => (
-            <div
-              key={plan.name}
-              className={`flex flex-col rounded-3xl p-8 ${
-                plan.featured
-                  ? "bg-card shadow-soft ring-[1.5px] ring-clay"
-                  : "bg-surface ring-1 ring-line/70"
-              }`}
-            >
-              <h3 className="text-lg font-semibold text-ink">{plan.name}</h3>
-              <p className="mt-4 flex items-baseline gap-1.5">
-                <span className="font-serif text-5xl font-medium text-ink">{plan.price}</span>
-                {plan.period && <span className="text-[15px] text-muted">{plan.period}</span>}
-              </p>
-              <ul className="mt-6 flex-1 space-y-2.5 text-[15px] text-link">
-                {plan.perks.map((perk) => (
-                  <li key={perk} className="flex items-center gap-3">
-                    <span aria-hidden="true" className="size-1.5 rounded-full bg-muted" />
-                    {perk}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#try"
-                className={`mt-8 inline-flex min-h-12 items-center justify-center rounded-full text-[15px] font-semibold transition-colors ${
-                  plan.featured
-                    ? "bg-clay text-white hover:bg-clay-dark"
-                    : "bg-soft text-ink hover:bg-line"
-                }`}
-              >
-                {plan.cta}
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function FinalCta() {
   return (
-    <section className="px-4 pb-20 sm:px-6 md:pb-24">
+    <section className="px-4 py-20 sm:px-6 md:py-24">
       <div className="mx-auto max-w-5xl rounded-[32px] bg-soft px-6 py-16 text-center md:py-20">
         <h2 className="mx-auto max-w-md font-serif text-[32px] font-medium leading-tight tracking-tight text-ink md:text-[42px]">
           Take one calm breath with us today
@@ -214,7 +147,6 @@ export function FinalCta() {
 
 const FOOTER_LINKS = [
   { href: "#how", label: "How it works" },
-  { href: "#pricing", label: "Pricing" },
   // Privacy and Contact pages are not built yet.
   { href: "#top", label: "Privacy" },
   { href: "#top", label: "Contact" },

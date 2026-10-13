@@ -8,7 +8,6 @@ const LINKS = [
   { href: "#how", label: "How it works" },
   { href: "#features", label: "Features" },
   { href: "#try", label: "Try a session" },
-  { href: "#pricing", label: "Pricing" },
 ];
 
 export function Nav() {
@@ -35,7 +34,7 @@ export function Nav() {
         <div className="flex items-center gap-1 sm:gap-3">
           {/* Sign in arrives with Supabase login (build step 3). */}
           <a
-            href="#pricing"
+            href="#top"
             className="hidden min-h-11 items-center px-3 text-[15px] font-medium text-ink hover:text-clay sm:inline-flex"
           >
             Sign in
@@ -64,7 +63,7 @@ export function Nav() {
           id="mobile-menu"
           className="border-t border-line bg-cream px-4 pb-4 pt-2 md:hidden"
         >
-          {[...LINKS, { href: "#pricing", label: "Sign in" }].map((link) => (
+          {[...LINKS, { href: "#top", label: "Sign in" }].map((link) => (
             <li key={link.label}>
               <a
                 href={link.href}
