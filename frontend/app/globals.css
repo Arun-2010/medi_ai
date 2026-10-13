@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #f7ede3;
+  --color-surface: #fbf4ec;
+  --color-card: #fff9f3;
+  --color-line: #ebd9c8;
+  --color-ink: #2b1b12;
+  --color-muted: #6e5646;
+  --color-link: #5a4436;
+  --color-clay: #b4531f;
+  --color-clay-dark: #8e3f15;
+  --color-clay-light: #f0a877;
+  --color-soft: #efdccb;
+  --color-night: #2b1b12;
+  --color-night-card: #3a2619;
+
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
+
+  --shadow-soft: 0 14px 34px rgba(120, 70, 30, 0.09);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-clay);
+  outline-offset: 3px;
+}
+
+/*
+ * Hero mood cards. Each card sets --dx/--dy (phones), --dx-md/--dy-md and
+ * --dx-xl/--dy-xl: its centre offset from the middle-top of the hero stage.
+ */
+.mood-spot {
+  position: absolute;
+  left: calc(50% + var(--dx));
+  top: var(--dy);
+  transform: translate(-50%, -50%);
+}
+
+@media (min-width: 768px) {
+  .mood-spot {
+    left: calc(50% + var(--dx-md));
+    top: var(--dy-md);
+  }
+}
+
+@media (min-width: 1280px) {
+  .mood-spot {
+    /* Keep wide cards inside the viewport on smaller desktop screens. */
+    left: calc(50% + clamp(-50vw + 125px, var(--dx-xl), 50vw - 125px));
+    top: var(--dy-xl);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+.vercel
+.DS_Store
+
+# Source design assets (copies live in frontend/public)
+images/
