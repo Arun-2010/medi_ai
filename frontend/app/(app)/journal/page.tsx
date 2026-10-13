@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { BulbIcon, CheckIcon } from "@/components/Icons";
 import { FEELINGS } from "@/lib/feelings";
 import { dayLabel, getJournal } from "@/lib/journal";
-import { MOODS } from "@/lib/moods";
+import { findMeditation } from "@/lib/meditations";
 
 export const metadata: Metadata = {
   title: "Journal · MediAI",
@@ -91,13 +91,13 @@ async function JournalContent() {
       ) : (
         <ul className="mt-3 flex flex-col gap-3">
           {entries.slice(0, 20).map((entry) => {
-            const mood = MOODS.find((m) => m.id === entry.mood_id);
+            const meditation = findMeditation(entry.meditation_id);
             const feeling = FEELINGS.find((f) => f.id === entry.feeling);
             return (
               <li key={entry.id} className="rounded-3xl bg-card px-5 py-4 ring-1 ring-line">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h3 className="text-base font-bold text-ink">{mood?.title ?? "Meditation"}</h3>
+                    <h3 className="text-base font-bold text-ink">{meditation?.title ?? "Meditation"}</h3>
                     <p className="mt-0.5 text-sm text-muted">
                       {dayLabel(entry.created_at, today)} · {entry.minutes} min
                     </p>

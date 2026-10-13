@@ -15,6 +15,8 @@ MediAI is an **AI meditation website**. The user shares how they feel (mood) and
 
 - Every page footer shows: "MediAI is for relaxation and everyday stress. It is not medical advice or a replacement for professional care. If you are in distress, call Tele-MANAS at 14416."
 - If a user's mood text shows serious distress (for example self-harm or suicidal thoughts), do NOT generate a meditation. Show a calm, kind message with the Tele-MANAS helpline (14416, India) instead.
+- If the user's text mentions driving, do NOT start a meditation. Show: "Please wait until you've stopped safely, then come back."
+- Walking meditations (later) must always be eyes open (`eyesOpen: true`).
 - Never put AI API keys in frontend code. All AI calls go through server-side API routes, with keys in `.env.local` (never committed to Git).
 
 ## Target users
@@ -43,6 +45,45 @@ MediAI is an **AI meditation website**. The user shares how they feel (mood) and
 | focus | Need focus | One Clear Task | 7 min |
 | low | Feeling low | Be Gentle With Yourself | 8 min |
 | quick | Short on time | Calm in 60 Seconds | 1 min |
+
+## Meditation types
+
+Every session uses its own breathing pattern and practice. It is never plain "breathe in, breathe out".
+All of this lives in `lib/meditations.ts` (one config per mood and task). Read it from there; never hardcode
+patterns, titles or lengths in components.
+
+**Moods** (home tab "How I feel")
+
+| Mood | Breathing pattern | Main practice | Length |
+|---|---|---|---|
+| Feeling stressed | in 4, out 6 | relax body part by part (jaw, shoulders, hands) | 5 min |
+| Can't sleep | 4-7-8 (in 4, hold 7, out 8), very slow | body scan toes to head, then slow fading story | 10 min |
+| Exam nerves | box (in 4, hold 4, out 4, hold 4) | 5-4-3-2-1 grounding + calm confident reminders | 5 min |
+| Need focus | natural, count 1 to 10 | count breaths, restart at 1 when mind wanders | 7 min |
+| Feeling low | slow natural | kindness practice, hand on chest, gentle words | 8 min |
+| Short on time | two quick sighs (double in, long out) | 3 breaths + look around the room | 1 min |
+
+**Tasks** (home tab "What I'm doing")
+
+| Task | Breathing pattern | Main practice | Length |
+|---|---|---|---|
+| Before studying | natural, count 1 to 10 | set one goal, then count breaths | 5 min |
+| Before sleep | 4-7-8, very slow | body scan + slow fading story | 10–15 min |
+| Study break | two quick sighs | relax eyes, neck, shoulders | 2–3 min |
+
+Later tasks (do not build yet): Before exam/interview, Waking up, Walking (eyes open), After an argument.
+
+**Rules**
+- The breathing circle follows the exact pattern: grows on "in", stays still on "hold", shrinks on "out",
+  with the exact seconds. The text inside reads "Breathe in" / "Hold" / "Breathe out". The technique name
+  (for example "Box breathing") shows under the session title. With `prefers-reduced-motion`, the circle
+  stays still and only the text changes.
+- Each mood and task has 3 prewritten fallback scripts, each using its own technique. Sessions rotate
+  through them so the same script does not repeat back to back.
+- Any pattern with a hold (4-7-8, box) must say once: "If holding your breath feels uncomfortable, just
+  breathe slowly." The app adds this line automatically; do not write it into scripts.
+- AI prompt (when AI is added): include the mood or task, technique, breathing pattern, minutes and the
+  user's own words, so each session is fresh but follows the right technique. See `lib/prompt.ts`.
 
 ## Tech stack
 

@@ -1,13 +1,13 @@
 "use server";
 
 import { FEELINGS, NOTE_MAX, type Feeling } from "@/lib/feelings";
-import { MOODS, type MoodId } from "@/lib/moods";
+import { findMeditation, type MeditationId } from "@/lib/meditations";
 import { createClient } from "@/lib/supabase/server";
 
 export type SaveResult = { ok: true } | { ok: false; reason: "signin" | "invalid" | "failed" };
 
 export async function saveJournalEntry(input: {
-  moodId: MoodId;
+  meditationId: MeditationId;
   minutes: number;
   feeling: Feeling;
   note: string;
@@ -22,7 +22,7 @@ export async function saveJournalEntry(input: {
   const note = input.note.trim().slice(0, NOTE_MAX);
   const minutes = Math.round(input.minutes);
   if (
-    !MOODS.some((m) => m.id === input.moodId) ||
+    !findMeditation(input.meditationId) ||
     !FEELINGS.some((f) => f.id === input.feeling) ||
     !(minutes >= 1 && minutes <= 60)
   ) {
@@ -31,7 +31,7 @@ export async function saveJournalEntry(input: {
 
   const { error } = await supabase.from("journal_entries").insert({
     user_id: user.id,
-    mood_id: input.moodId,
+    meditation_id: input.meditationId,
     minutes,
     feeling: input.feeling,
     note: note || null,

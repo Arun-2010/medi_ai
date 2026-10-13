@@ -2,12 +2,12 @@ import "server-only";
 import { cache } from "react";
 import { getCurrentUser } from "@/lib/auth";
 import type { Feeling } from "@/lib/feelings";
-import type { MoodId } from "@/lib/moods";
+import type { MeditationId } from "@/lib/meditations";
 import { createClient } from "@/lib/supabase/server";
 
 export type JournalEntry = {
   id: string;
-  mood_id: MoodId;
+  meditation_id: MeditationId;
   minutes: number;
   feeling: Feeling;
   note: string | null;
@@ -63,7 +63,7 @@ export const getJournal = cache(async (): Promise<JournalData> => {
   // Row-level security limits this to the signed-in user's own rows.
   const { data, error } = await supabase
     .from("journal_entries")
-    .select("id, mood_id, minutes, feeling, note, created_at")
+    .select("id, meditation_id, minutes, feeling, note, created_at")
     .order("created_at", { ascending: false })
     .limit(200);
 

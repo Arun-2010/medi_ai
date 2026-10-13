@@ -23,10 +23,6 @@ export default function HomePage() {
         </Suspense>
       </header>
 
-      <h1 className="mt-8 font-serif text-[32px] font-medium leading-[1.12] tracking-tight text-ink">
-        How are you feeling right now?
-      </h1>
-
       <MoodCheckIn />
     </>
   );

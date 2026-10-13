@@ -3,7 +3,7 @@
 import type { CSSProperties, ComponentType, SVGProps } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { MOODS, type MoodId } from "@/lib/moods";
+import { MOODS, type MeditationId } from "@/lib/meditations";
 import {
   HeartIcon,
   MoonIcon,
@@ -14,7 +14,7 @@ import {
 } from "./Icons";
 
 type Spot = {
-  id: MoodId;
+  id: MeditationId;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   /** Tilt in degrees; left cards lean left, right cards lean right. */
   tilt: number;

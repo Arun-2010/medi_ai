@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { MOODS, type Mood } from "@/lib/moods";
+import { MOODS, previewLine, sessionLines, type Meditation } from "@/lib/meditations";
 
-function speak(mood: Mood, onEnd: () => void) {
+function speak(mood: Meditation, onEnd: () => void) {
   const synth = window.speechSynthesis;
   synth.cancel();
-  const lines = mood.script;
+  const lines = sessionLines(mood, 0);
   lines.forEach((line, i) => {
     const utterance = new SpeechSynthesisUtterance(line);
-    utterance.rate = 0.85;
-    utterance.pitch = 0.95;
+    utterance.rate = mood.voice.rate;
+    utterance.pitch = mood.voice.pitch;
     if (i === lines.length - 1) {
       utterance.onend = onEnd;
       utterance.onerror = onEnd;
@@ -21,7 +21,7 @@ function speak(mood: Mood, onEnd: () => void) {
 }
 
 export function TryItNow() {
-  const [mood, setMood] = useState<Mood>(MOODS[0]);
+  const [mood, setMood] = useState<Meditation>(MOODS[0]);
   const [playing, setPlaying] = useState(false);
   const [canSpeak, setCanSpeak] = useState(true);
   const reduceMotion = useReducedMotion();
@@ -34,7 +34,7 @@ export function TryItNow() {
     };
   }, []);
 
-  function pickMood(next: Mood) {
+  function pickMood(next: Meditation) {
     if (playing) window.speechSynthesis.cancel();
     setPlaying(false);
     setMood(next);
@@ -114,7 +114,7 @@ export function TryItNow() {
                 {mood.title}
               </h3>
               <p className="mx-auto mt-3 max-w-sm text-[15px] italic leading-relaxed text-[#DCC7B5]">
-                “{mood.firstLine}”
+                “{previewLine(mood)}”
               </p>
             </motion.div>
           </AnimatePresence>

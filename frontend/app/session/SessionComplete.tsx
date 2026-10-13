@@ -8,7 +8,7 @@ import { CheckIcon } from "@/components/Icons";
 import { WellnessNote } from "@/components/WellnessNote";
 import { showsDistress } from "@/lib/checkin";
 import { FEELINGS, NOTE_MAX, type Feeling } from "@/lib/feelings";
-import type { Mood } from "@/lib/moods";
+import type { Meditation } from "@/lib/meditations";
 import { saveJournalEntry } from "./actions";
 
 const ERRORS = {
@@ -16,7 +16,13 @@ const ERRORS = {
   failed: "We could not save this right now. Please try again.",
 };
 
-export function SessionComplete({ mood, seconds }: { mood: Mood; seconds: number }) {
+export function SessionComplete({
+  meditation,
+  seconds,
+}: {
+  meditation: Meditation;
+  seconds: number;
+}) {
   const router = useRouter();
   const [feeling, setFeeling] = useState<Feeling | null>(null);
   const [note, setNote] = useState("");
@@ -34,7 +40,7 @@ export function SessionComplete({ mood, seconds }: { mood: Mood; seconds: number
     setMessage(null);
     startSaving(async () => {
       const result = await saveJournalEntry({
-        moodId: mood.id,
+        meditationId: meditation.id,
         minutes: Math.max(1, Math.round(seconds / 60)),
         feeling,
         note,

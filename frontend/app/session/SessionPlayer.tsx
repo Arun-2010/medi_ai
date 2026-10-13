@@ -5,17 +5,18 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { CloseIcon, PauseIcon, PlayIcon, SlidersIcon } from "@/components/Icons";
 import { WellnessNote } from "@/components/WellnessNote";
-import type { Mood } from "@/lib/moods";
+import { breathAt, PHASE_LABEL } from "@/lib/breathing";
+import { sessionLines, type Meditation, type VoiceStyle } from "@/lib/meditations";
 import { createRain } from "@/lib/rain";
 
-/** Seconds for each breath in and each breath out. */
-const BREATH = 4;
 const SKIP = 15;
+/** Circle size while paused or with reduced motion. */
+const RESTING_SCALE = 0.86;
 
-type Voice = "calm" | "off";
+type Voice = "on" | "off";
 type Sound = "rain" | "off";
 
-function speak(line: string) {
+function speak(line: string, style: VoiceStyle, volume: number) {
   if (!("speechSynthesis" in window)) return;
   const synth = window.speechSynthesis;
   synth.cancel();
@@ -25,8 +26,9 @@ function speak(line: string) {
     voices.find((v) => v.lang === "en-IN") ?? voices.find((v) => v.lang.startsWith("en"));
   if (voice) utterance.voice = voice;
   utterance.lang = voice?.lang ?? "en-IN";
-  utterance.rate = 0.85;
-  utterance.pitch = 0.95;
+  utterance.rate = style.rate;
+  utterance.pitch = style.pitch;
+  utterance.volume = volume;
   synth.speak(utterance);
 }
 
@@ -41,18 +43,20 @@ function formatTime(seconds: number) {
 }
 
 export function SessionPlayer({
-  mood,
+  meditation,
   minutes,
+  variant,
   onFinish,
 }: {
-  mood: Mood;
+  meditation: Meditation;
   minutes: number;
+  variant: number;
   onFinish: (secondsListened: number) => void;
 }) {
   const total = minutes * 60;
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(true);
-  const [voice, setVoice] = useState<Voice>("calm");
+  const [voice, setVoice] = useState<Voice>("on");
   const [sound, setSound] = useState<Sound>("rain");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [rain] = useState(createRain);
@@ -65,9 +69,11 @@ export function SessionPlayer({
   });
 
   // Each script line gets an equal share of the session.
-  const lines = mood.script;
+  const [lines] = useState(() => sessionLines(meditation, variant));
   const lineIndex = Math.min(lines.length - 1, Math.floor((elapsed / total) * lines.length));
-  const breathingIn = Math.floor(elapsed / BREATH) % 2 === 0;
+  const breath = breathAt(meditation.breathing, elapsed);
+  // Sleep voices get quieter toward the end of the session.
+  const volume = meditation.voice.fadeOut ? 1 - 0.6 * (lineIndex / Math.max(1, lines.length - 1)) : 1;
 
   useEffect(() => {
     if (!playing) return;
@@ -81,9 +87,9 @@ export function SessionPlayer({
 
   // Read each line aloud when it comes up.
   useEffect(() => {
-    if (playing && voice === "calm") speak(lines[lineIndex]);
+    if (playing && voice === "on") speak(lines[lineIndex], meditation.voice, volume);
     else stopVoice();
-  }, [playing, voice, lineIndex, lines]);
+  }, [playing, voice, lineIndex, lines, meditation.voice, volume]);
 
   useEffect(() => {
     if (playing && sound === "rain") rain.start();
@@ -114,7 +120,7 @@ export function SessionPlayer({
             <CloseIcon className="size-5" />
           </Link>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-clay-light">
-            {minutes} min · {mood.shortLabel}
+            {minutes} min · {meditation.shortLabel}
           </p>
           <button
             type="button"
@@ -127,21 +133,36 @@ export function SessionPlayer({
         </div>
 
         <h1 className="mt-8 font-serif text-[32px] font-medium leading-tight tracking-tight">
-          {mood.title}
+          {meditation.title}
         </h1>
+        <p className="mt-2 text-[15px] font-semibold text-clay-light">{meditation.breathing.name}</p>
+        <p className="mt-1 text-sm text-cream/75">
+          {meditation.eyesOpen ? "Keep your eyes open" : "Close your eyes if you like"}
+        </p>
 
-        <div className="relative mt-8 flex size-64 items-center justify-center rounded-full ring-1 ring-white/12">
+        <div className="relative mt-6 flex size-64 items-center justify-center rounded-full ring-1 ring-white/12">
           <motion.div
             aria-hidden="true"
             className="absolute size-56 rounded-full bg-[radial-gradient(circle_at_50%_40%,#e3925c_0%,#c96a32_60%,#b4581f_100%)] shadow-[0_0_70px_rgba(224,135,79,0.25)]"
-            animate={{ scale: playing && !reduceMotion ? (breathingIn ? 1 : 0.8) : 0.9 }}
-            transition={{ duration: reduceMotion ? 0 : BREATH, ease: "easeInOut" }}
+            animate={{
+              scale: playing && !reduceMotion ? breath.targetScale : RESTING_SCALE,
+            }}
+            transition={
+              playing && !reduceMotion
+                ? { duration: breath.phase.seconds, ease: "easeInOut" }
+                : { duration: reduceMotion ? 0 : 0.8 }
+            }
           />
-          <div aria-live="polite" className="relative text-ink">
+          <div className="relative text-ink">
             <p className="font-serif text-[26px] font-semibold">
-              {playing ? (breathingIn ? "Breathe in" : "Breathe out") : "Paused"}
+              {playing ? PHASE_LABEL[breath.phase.kind] : "Paused"}
             </p>
-            <p className="text-sm font-medium">follow the circle</p>
+            <p className="text-sm font-medium">
+              {!playing
+                ? "tap play to go on"
+                : (breath.phase.cue ??
+                  (breath.count ? `count ${breath.count}` : `${breath.secondsLeft}`))}
+            </p>
           </div>
         </div>
 
@@ -203,7 +224,7 @@ export function SessionPlayer({
             onClick={() => setSettingsOpen(true)}
             className="inline-flex min-h-11 items-center rounded-full bg-night-card px-4 text-sm font-medium transition-colors hover:bg-white/10"
           >
-            Voice: {voice === "calm" ? "Calm · English" : "Off"}
+            Voice: {voice === "on" ? `${meditation.voice.name} · English` : "Off"}
           </button>
           <button
             type="button"
@@ -228,6 +249,7 @@ export function SessionPlayer({
       {settingsOpen && (
         <SettingsSheet
           voice={voice}
+          voiceName={meditation.voice.name}
           sound={sound}
           onVoice={setVoice}
           onSound={setSound}
@@ -240,12 +262,14 @@ export function SessionPlayer({
 
 function SettingsSheet({
   voice,
+  voiceName,
   sound,
   onVoice,
   onSound,
   onClose,
 }: {
   voice: Voice;
+  voiceName: string;
   sound: Sound;
   onVoice: (v: Voice) => void;
   onSound: (s: Sound) => void;
@@ -285,7 +309,7 @@ function SettingsSheet({
           label="Voice"
           value={voice}
           options={[
-            { id: "calm", label: "Calm · English" },
+            { id: "on", label: `${voiceName} · English` },
             { id: "off", label: "Off" },
           ]}
           onChange={onVoice}

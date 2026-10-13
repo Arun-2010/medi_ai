@@ -2,28 +2,29 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { TIME_OPTIONS } from "@/lib/checkin";
-import { MOODS } from "@/lib/moods";
+import { findMeditation, MEDITATIONS } from "@/lib/meditations";
 import { SessionComplete } from "./SessionComplete";
 import { SessionPlayer } from "./SessionPlayer";
 
 export function SessionFlow() {
   const params = useSearchParams();
-  const mood = MOODS.find((m) => m.id === params.get("mood")) ?? MOODS[0];
+  const meditation = findMeditation(params.get("id")) ?? MEDITATIONS[0];
   const asked = Number(params.get("min"));
-  const minutes = (TIME_OPTIONS as readonly number[]).includes(asked) ? asked : mood.minutes;
+  const minutes = meditation.minuteOptions.includes(asked) ? asked : meditation.minutes;
+  const variant = Math.max(0, Math.floor(Number(params.get("v")) || 0));
 
   /** Seconds listened, once the session has ended. */
   const [listened, setListened] = useState<number | null>(null);
 
   if (listened !== null) {
-    return <SessionComplete mood={mood} seconds={listened} />;
+    return <SessionComplete meditation={meditation} seconds={listened} />;
   }
 
   return (
     <SessionPlayer
-      mood={mood}
+      meditation={meditation}
       minutes={minutes}
+      variant={variant}
       onFinish={(seconds) => {
         setListened(seconds);
         window.scrollTo(0, 0);

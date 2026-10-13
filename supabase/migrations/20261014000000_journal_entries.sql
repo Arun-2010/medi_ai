@@ -4,7 +4,10 @@
 create table if not exists public.journal_entries (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
-  mood_id text not null check (mood_id in ('stressed', 'sleep', 'exam', 'focus', 'low', 'quick')),
+  -- A mood or task id from frontend/lib/meditations.ts.
+  meditation_id text not null check (
+    meditation_id in ('stressed', 'sleep', 'exam', 'focus', 'low', 'quick', 'studying', 'bedtime', 'break')
+  ),
   minutes integer not null check (minutes between 1 and 60),
   feeling text not null check (feeling in ('calmer', 'same', 'not_better')),
   note text check (char_length(note) <= 300),
