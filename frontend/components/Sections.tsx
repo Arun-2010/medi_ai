@@ -147,9 +147,9 @@ export function FinalCta() {
 
 const FOOTER_LINKS = [
   { href: "#how", label: "How it works" },
-  // Privacy and Contact pages are not built yet.
-  { href: "#top", label: "Privacy" },
-  { href: "#top", label: "Contact" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function Footer() {

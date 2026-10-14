@@ -49,12 +49,11 @@ export default function LoginPage() {
 
       <p className="mt-auto pt-12 text-center text-xs leading-relaxed text-muted">
         By continuing, you agree to our{" "}
-        {/* Terms and Privacy pages are not built yet. */}
-        <Link href="/" className="underline underline-offset-2 hover:text-ink">
+        <Link href="/terms" className="underline underline-offset-2 hover:text-ink">
           Terms
         </Link>{" "}
         and{" "}
-        <Link href="/" className="underline underline-offset-2 hover:text-ink">
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-ink">
           Privacy Policy
         </Link>
         .
